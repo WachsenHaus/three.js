@@ -10,7 +10,10 @@ import * as THREE from 'three';
 // 랜더러가 가지고 있는 캔버스이다.
 
 const canvas = document.querySelector('#three-canvas');
-const renderer = new THREE.WebGLRenderer({ canvas });
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: true,
+});
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 // 씬
