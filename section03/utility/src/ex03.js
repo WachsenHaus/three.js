@@ -57,8 +57,8 @@ export default function example() {
   const gui = new dat.GUI();
   gui.add(mesh.position, 'y', -5, 5, 0.01).name('큐브 Y');
   gui.add(camera.position, 'x', -10, 10, 0.01).name('카메라 X');
-  camera.lookAt(mesh.position);
 
+  camera.lookAt(mesh.position);
   // 그리기
   const clock = new THREE.Clock();
 
@@ -66,6 +66,8 @@ export default function example() {
     const time = clock.getElapsedTime();
 
     mesh.rotation.y = time;
+
+    camera.lookAt(mesh.position);
 
     renderer.render(scene, camera);
     renderer.setAnimationLoop(draw);
