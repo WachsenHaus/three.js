@@ -1,14 +1,7 @@
 import { _ } from 'core-js';
 import * as THREE from 'three';
 
-// 주제 -- 씬 생성과 카메라 설정해보기
-// 동적으로 캔버스 조립하기
-// 렌더러가 생성된다.
-// const renderer = new THREE.WebGLRenderer();
-// renderer.setSize(window.innerWidth, window.innerHeight);
-// console.log(renderer.domElement);
-// document.body.appendChild(renderer.domElement);
-// 랜더러가 가지고 있는 캔버스이다.
+// -- 주제 : 브라우저 창 사이즈 변경에 대응하기
 
 export const example = () => {
   console.log('렌더링01');
@@ -53,6 +46,18 @@ export const example = () => {
 
   //그리기
   renderer.render(scene, camera);
+
+  const setSize = () => {
+    // 카메라
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix(); // 카메라가 변동되면 적용해야한다
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    console.log(window.devicePixelRatio); //장치의 픽셀 비율을 가져온다.
+    renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1);
+    renderer.render(scene, camera);
+  };
+  // 이벤트
+  window.addEventListener('resize', setSize);
 };
 
 export default example;
