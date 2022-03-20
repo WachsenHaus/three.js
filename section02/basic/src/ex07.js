@@ -1,7 +1,8 @@
 import { _ } from 'core-js';
 import * as THREE from 'three';
+import gsap from 'gsap';
 
-// -- 주제 : 애니메이션 성능 보정 2
+// -- 주제 : gsap 라이브 이용
 // 애니메이션프레임에서 three.delte를 사용하는것이 가장 좋아보이는 솔루션이다.
 // 자바스크립트의 타임을 사용해서 시간값을 보정할 수 있다.(threejs에 의존하지 않는다.)
 
@@ -55,39 +56,46 @@ export const example = () => {
   });
 
   const meshes = [];
-  let mesh;
-  for (let i = 0; i < 10; i++) {
-    mesh = new THREE.Mesh(geometry, material);
-    console.log(Math.random() * 5);
-    mesh.position.x = Math.random() * 5 - 2.5;
-    mesh.position.z = Math.random() * 5 - 2.5;
-    scene.add(mesh);
-    meshes.push(mesh);
-  }
+  let mesh = new THREE.Mesh(geometry, material);
+  //   for (let i = 0; i < 1; i++) {
+  //     mesh = new THREE.Mesh(geometry, material);
+  //     console.log(Math.random() * 5);
+  //     mesh.position.x = Math.random() * 5 - 2.5;
+  //     mesh.position.z = Math.random() * 5 - 2.5;
+  //     scene.add(mesh);
+  //     meshes.push(mesh);
+  //   }
   //   const
   // 씬에 랜더러 추가
-  //   scene.add(mesh);
+  scene.add(mesh);
 
   const clock = new THREE.Clock();
 
   const draw = () => {
     const delta = clock.getDelta();
-    meshes.forEach((item) => {
-      item.rotation.y += delta;
-      console.log(item);
-    });
+    // meshes.forEach((item) => {
+    //   item.rotation.y += delta;
+    //   console.log(item);
+    // });
     renderer.render(scene, camera);
     renderer.setAnimationLoop(draw);
   };
   // 태양빛과 비슷하다.
   const light = new THREE.DirectionalLight(0xffffff, 2);
   light.position.x = 1;
-  light.position.z = 10;
+  light.position.z = 5;
   scene.add(light);
 
   //그리기
   //   renderer.render(scene, camera);
   draw();
+
+  //gsap
+  gsap.to(mesh.position, {
+    duration: 1,
+    y: 2,
+    z: 5,
+  });
 
   const setSize = () => {
     // 카메라
