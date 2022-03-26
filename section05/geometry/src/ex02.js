@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-// ----- 주제: Geometry 기본
+// ----- 주제: Geometry 정점(Vertex) position 이용하기
 
 export default function example() {
   // Renderer
@@ -40,23 +40,43 @@ export default function example() {
 
   // Mesh
   const geometry = new THREE.SphereGeometry(5, 64, 64);
+  // const geometry = new THREE.PlaneGeometry(10, 10, 32, 32);
   const material = new THREE.MeshStandardMaterial({
-    color: 'hotpink',
+    color: 'orangered',
     side: THREE.DoubleSide,
-    // wireframe: true,
     flatShading: true,
   });
-  //   material.
   const mesh = new THREE.Mesh(geometry, material);
   scene.add(mesh);
 
-  console.log(geometry.attributes.position.array);
+  // console.log(geometry.attributes.position.array);
+  const positionArray = geometry.attributes.position.array;
+  const randomArray = [];
+  for (let i = 0; i < positionArray.length; i += 3) {
+    // 정점(Vertex) 한 개의 x, y, z 좌표를 랜덤으로 조정
+    // positionArray[i] = positionArray[i] + (Math.random() - 0.5) * 0.2;
+    positionArray[i] += (Math.random() - 0.5) * 0.2;
+    positionArray[i + 1] += (Math.random() - 0.5) * 0.2;
+    positionArray[i + 2] += (Math.random() - 0.5) * 0.2;
+
+    randomArray[i] = (Math.random() - 0.5) * 0.2;
+    randomArray[i + 1] = (Math.random() - 0.5) * 0.2;
+    randomArray[i + 2] = (Math.random() - 0.5) * 0.2;
+  }
 
   // 그리기
   const clock = new THREE.Clock();
 
   function draw() {
-    const delta = clock.getDelta();
+    const time = clock.getElapsedTime() * 3;
+
+    for (let i = 0; i < positionArray.length; i += 3) {
+      positionArray[i] += Math.sin(time + randomArray[i] * 100) * 0.001;
+      positionArray[i + 1] += Math.sin(time + randomArray[i + 1] * 100) * 0.001;
+      positionArray[i + 2] += Math.sin(time + randomArray[i + 2] * 100) * 0.001;
+    }
+
+    geometry.attributes.position.needsUpdate = true;
 
     renderer.render(scene, camera);
     renderer.setAnimationLoop(draw);

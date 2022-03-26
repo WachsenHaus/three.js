@@ -52,26 +52,36 @@ export default function example() {
 
   //vertex는
   const positionArray = geometry.attributes.position.array;
+  const randomArray = [];
   //   const
   for (let i = 0; i < positionArray.length; i += 3) {
     // 정점(vertex) 한개의 x,y,z좌표를 랜덤으로 조정한다.
     positionArray[i] += (Math.random() - 0.5) * 0.2; //0.5를 뺴는것은 값의 분포를 골고루 하기위해서이다. math.random은 0이상 1이하이다.
     positionArray[i + 1] += (Math.random() - 0.5) * 0.2;
     positionArray[i + 2] += (Math.random() - 0.5) * 0.2;
+
+    randomArray[i] = (Math.random() - 0.5) * 0.2; //0.5를 뺴는것은 값의 분포를 골고루 하기위해서이다. math.random은 0이상 1이하이다.
+    randomArray[i + 1] = (Math.random() - 0.5) * 0.2;
+    randomArray[i + 2] = (Math.random() - 0.5) * 0.2;
   }
+  console.log(randomArray);
   // 그리기
   const clock = new THREE.Clock();
 
   function draw() {
-    const delta = clock.getDelta();
-    const time = clock.getElapsedTime();
-    console.log(time);
+    // const delta = clock.getDelta();
+    const time = clock.getElapsedTime() * 3;
+    // console.log(time);
 
     for (let i = 0; i < positionArray.length; i += 3) {
       // 정점(vertex) 한개의 x,y,z좌표를 랜덤으로 조정한다.
-      positionArray[i] += Math.sin(time) * 0.01;
-      positionArray[i + 1] += Math.sin(time) * 0.01;
-      positionArray[i + 2] += Math.sin(time) * 0.01;
+      positionArray[i] += Math.sin(time + randomArray[i] * 1000) * 0.001;
+      positionArray[i + 1] +=
+        Math.sin(time + randomArray[i + 1] * 1000) * 0.001;
+      positionArray[i + 2] +=
+        Math.sin(time + randomArray[i + 2] * 1000) * 0.001;
+      //   positionArray[i + 1] += Math.sin(time) * 0.01;
+      //   positionArray[i + 2] += Math.sin(time) * 0.01;
       //   positionArray[i + 1] += (Math.random() - 0.5) * 0.2;
       //   positionArray[i + 2] += (Math.random() - 0.5) * 0.2;
     }
