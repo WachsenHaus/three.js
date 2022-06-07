@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-// ----- 주제: OrbitControls
+// ----- 주제: 각지게표현ㅇ하기
 
 export default function example() {
   // Renderer
@@ -34,12 +34,22 @@ export default function example() {
   // Controls
   const controls = new OrbitControls(camera, renderer.domElement);
   // Mesh
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
-  const material = new THREE.MeshStandardMaterial({
-    color: 'seagreen',
+  const geometry = new THREE.SphereGeometry(1, 16, 16);
+  const material1 = new THREE.MeshPhongMaterial({
+    color: 'orangered',
+    shininess: 800,
+    flatShading: true,
   });
-  const mesh = new THREE.Mesh(geometry, material);
-  scene.add(mesh);
+  const material2 = new THREE.MeshStandardMaterial({
+    color: 'orangered',
+    roughness: 0.2,
+  });
+  const mesh1 = new THREE.Mesh(geometry, material1);
+  const mesh2 = new THREE.Mesh(geometry, material2);
+  mesh1.position.x = -1.5;
+  mesh2.position.x = 2;
+  scene.add(mesh1, mesh2);
+  // scene.add(mesh2);
 
   // 그리기
   const clock = new THREE.Clock();

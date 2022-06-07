@@ -1,9 +1,42 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-// ----- 주제: OrbitControls
+// ----- 주제: 텍스쳐 변환
 
 export default function example() {
+  // 텍스쳐 이미지 로드
+  const loadingManager = new THREE.LoadingManager();
+  loadingManager.onStart = () => {
+    console.log('로드 시작');
+  };
+  loadingManager.onProgress = (img) => {
+    console.log(img + ' 로드');
+  };
+  loadingManager.onLoad = () => {
+    console.log('로드 완료');
+  };
+  loadingManager.onError = () => {
+    console.log('에러');
+  };
+
+  const textureLoader = new THREE.TextureLoader(loadingManager);
+  const texture = textureLoader.load('/textures/skull/Ground Skull_basecolor.jpg');
+
+  // 텍스쳐 변환 늘어지는것을 방지해줌
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+
+  texture.offset.x = 0.3;
+  texture.offset.y = 0.3;
+
+  // texture.repeat.x = 2;
+  // texture.repeat.y = 2;
+
+  // texture.rotation = Math.PI * 0.25;
+  texture.rotation = THREE.MathUtils.degToRad(60);
+  texture.center.x = 0.5;
+  texture.center.y = 0.5;
+
   // Renderer
   const canvas = document.querySelector('#three-canvas');
   const renderer = new THREE.WebGLRenderer({
@@ -15,28 +48,28 @@ export default function example() {
 
   // Scene
   const scene = new THREE.Scene();
+  scene.background = new THREE.Color('white');
 
   // Camera
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.y = 4;
+  camera.position.y = 1.5;
   camera.position.z = 4;
   scene.add(camera);
 
   // Light
   const ambientLight = new THREE.AmbientLight('white', 0.5);
-  scene.add(ambientLight);
-
   const directionalLight = new THREE.DirectionalLight('white', 1);
-  directionalLight.position.x = 1;
-  directionalLight.position.z = 2;
-  scene.add(directionalLight);
+  directionalLight.position.set(1, 1, 2);
+  scene.add(ambientLight, directionalLight);
 
   // Controls
   const controls = new OrbitControls(camera, renderer.domElement);
+
   // Mesh
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const geometry = new THREE.BoxGeometry(2, 2, 2);
+  // const material = new THREE.MeshBasicMaterial({
   const material = new THREE.MeshStandardMaterial({
-    color: 'seagreen',
+    map: texture,
   });
   const mesh = new THREE.Mesh(geometry, material);
   scene.add(mesh);

@@ -1,9 +1,27 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-// ----- 주제: OrbitControls
+// ----- 주제: MeshMatcapMaterial
 
 export default function example() {
+  // 텍스쳐 이미지 로드
+  const loadingManager = new THREE.LoadingManager();
+  loadingManager.onStart = () => {
+    console.log('로드 시작');
+  };
+  loadingManager.onProgress = (img) => {
+    console.log(img + ' 로드');
+  };
+  loadingManager.onLoad = () => {
+    console.log('로드 완료');
+  };
+  loadingManager.onError = () => {
+    console.log('에러');
+  };
+
+  const textureLoader = new THREE.TextureLoader(loadingManager);
+  const matcapTex = textureLoader.load('/textures/matcap/Jade_Purple.png');
+
   // Renderer
   const canvas = document.querySelector('#three-canvas');
   const renderer = new THREE.WebGLRenderer({
@@ -15,28 +33,28 @@ export default function example() {
 
   // Scene
   const scene = new THREE.Scene();
+  // scene.background = new THREE.Color('white');
 
   // Camera
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.y = 4;
+  camera.position.y = 1.5;
   camera.position.z = 4;
   scene.add(camera);
 
   // Light
   const ambientLight = new THREE.AmbientLight('white', 0.5);
-  scene.add(ambientLight);
-
   const directionalLight = new THREE.DirectionalLight('white', 1);
-  directionalLight.position.x = 1;
-  directionalLight.position.z = 2;
-  scene.add(directionalLight);
+  directionalLight.position.set(1, 1, 2);
+  scene.add(ambientLight, directionalLight);
 
   // Controls
   const controls = new OrbitControls(camera, renderer.domElement);
+
   // Mesh
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
-  const material = new THREE.MeshStandardMaterial({
-    color: 'seagreen',
+  // const geometry = new THREE.BoxGeometry(2, 2, 2);
+  const geometry = new THREE.ConeGeometry(1, 2, 64);
+  const material = new THREE.MeshMatcapMaterial({
+    matcap: matcapTex,
   });
   const mesh = new THREE.Mesh(geometry, material);
   scene.add(mesh);
