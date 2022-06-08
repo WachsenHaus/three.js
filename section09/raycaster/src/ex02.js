@@ -61,7 +61,6 @@ export default function example() {
   const meshes = [boxMesh, torusMesh];
   // 마우스 좌표
   const mouse = new Vector2();
-  console.log(mouse);
 
   const rayCaster = new THREE.Raycaster();
 
@@ -85,13 +84,15 @@ export default function example() {
   function checkIntersects() {
     // 광선이 나오는곳을 조정하는것임.
     // mouse는 내가 생성한 벡터2d임,
+    if (mouseMoved) {
+      return;
+    }
     rayCaster.setFromCamera(mouse, camera);
     const intersects = rayCaster.intersectObjects(meshes);
     for (const item of intersects) {
       console.log(item.object.name);
       break;
     }
-    console.log(intersects[0]);
   }
 
   function setSize() {
@@ -105,12 +106,30 @@ export default function example() {
   window.addEventListener('resize', setSize);
   canvas.addEventListener('click', (e) => {
     // three js에 맞게 변경시켜줘야한다.
-    console.log(e.clientX, e.clientY);
     // 70%정도의 위치에서 마우스를 클릭했다면. 0.7이고 1.4에 -1을 하면 0.4인데 중간값으로 맞추는것이다.
     mouse.x = (e.clientX / canvas.clientWidth) * 2 - 1;
     mouse.y = -((e.clientY / canvas.clientHeight) * 2 - 1);
-    console.log(mouse);
     checkIntersects();
+  });
+  let mouseMoved; // 마우스를 드래그 했는지 true false
+  let clickStartX;
+  let clickStartY;
+  let clickStartTime;
+  canvas.addEventListener('mousedown', (e) => {
+    clickStartX = e.clientX;
+    clickStartY = e.clientY;
+    clickStartTime = Date.now();
+  });
+  canvas.addEventListener('mouseup', (e) => {
+    const xGap = Math.abs(e.clientX - clickStartX);
+    const yGap = Math.abs(e.clientY - clickStartY);
+    const timeGap = Date.now() - clickStartTime;
+    console.log(xGap, yGap);
+    if (xGap > 5 || yGap > 5 || timeGap > 100) {
+      mouseMoved = true;
+    } else {
+      mouseMoved = false;
+    }
   });
 
   draw();
