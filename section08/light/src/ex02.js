@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import dat from 'dat.gui';
 
-// ----- 주제: Light 기본
+// ----- 주제: Light와 shadow 그림자
 
 export default function example() {
   // Renderer
@@ -13,6 +13,10 @@ export default function example() {
   });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1);
+  // 렌더러에서 그림 설정.
+  renderer.shadowMap.enabled = true;
+  // renderer.shadowMap.type = THREE.PCFShadowMap;
+  // renderer.shadowMap.type = THREE.BasicShadowMap;
 
   // Scene
   const scene = new THREE.Scene();
@@ -29,12 +33,26 @@ export default function example() {
 
   // 태양광
   const light = new THREE.DirectionalLight('red', 3.5);
-  // light.position.x = -3;
+  // light.position.x = 3;
   light.position.y = 3;
+
   scene.add(light);
 
   const lightHelper = new THREE.DirectionalLightHelper(light);
+
   scene.add(lightHelper);
+
+  // 그림자 설정
+  light.castShadow = true;
+  // 해상도를 설정함.
+  // light.shadow.mapSize.width = 512;
+  // light.shadow.mapSize.height = 512;
+
+  light.shadow.mapSize.width = 1920;
+  light.shadow.mapSize.height = 1080;
+  light.shadow.camera.near = 1;
+  light.shadow.camera.far = 5;
+  light.shadow.radius = 15;
 
   // Controls
   const controls = new OrbitControls(camera, renderer.domElement);
@@ -60,6 +78,13 @@ export default function example() {
 
   scene.add(plane, box, sphere);
 
+  // 플레인
+  plane.receiveShadow = true;
+  box.castShadow = true;
+  box.receiveShadow = true;
+  sphere.castShadow = true;
+  sphere.receiveShadow = true;
+
   // AxesHelper
   const axesHelper = new THREE.AxesHelper(3);
   scene.add(axesHelper);
@@ -76,8 +101,8 @@ export default function example() {
   function draw() {
     const time = clock.getElapsedTime();
 
-    light.position.x = Math.cos(time) * 5;
-    light.position.z = Math.sin(time) * 5;
+    // light.position.x = Math.cos(time) * 5;
+    // light.position.z = Math.sin(time) * 5;
 
     renderer.render(scene, camera);
     renderer.setAnimationLoop(draw);
