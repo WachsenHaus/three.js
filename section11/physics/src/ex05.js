@@ -3,7 +3,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import * as cannon from 'cannon-es';
 import { PreventDragClick } from './PreventDragClick';
 import { MySphere } from './MySphere';
-// ----- 주제: cannon.js 기본 세팅
+// import boing from './sounds/boing.mp3';
+// ----- 주제: 충돌 이벤트, 사운드 넣기
 
 // cannon.js 문서
 // http://schteppe.github.io/cannon.js/docs/
@@ -167,21 +168,37 @@ export default function example() {
   // 이벤트
   window.addEventListener('resize', setSize);
 
+  const sound = new Audio('/sounds/boing.mp3');
+  function collide(e) {
+    // 충돌이 될떄마다 0으로 맞추면 처음부터 다시 재생이된다.
+    sound.currentTime = 0;
+    // 충돌할 때 일정속도 이상일때만 나오게하는 방법은 ?
+    const velocity = e.contact.getImpactVelocityAlongNormal();
+    if (velocity > 10) {
+      console.log(velocity);
+      sound.play();
+    }
+    console.log(e);
+  }
   // 클릭이벤트
   canvas.addEventListener('click', () => {
     // 방향과 힘을 적용하고 어디에 적용할건지 정해주자. 두번째 인자가 어디에 적용인지 정하는것.
-    spheres.push(
-      new MySphere({
-        scene,
-        cannonWorld,
-        geometry: sphereGeometry,
-        material: sphereMaterial,
-        x: (Math.random() - 0.5) * 2,
-        y: Math.random() * 5 + 2,
-        z: (Math.random() - 0.5) * 2,
-        scale: Math.random() + 0.2,
-      })
-    );
+
+    const mySphere = new MySphere({
+      scene,
+      cannonWorld,
+      geometry: sphereGeometry,
+      material: sphereMaterial,
+      x: (Math.random() - 0.5) * 2,
+      y: Math.random() * 5 + 2,
+      z: (Math.random() - 0.5) * 2,
+      scale: Math.random() + 0.2,
+    });
+
+    spheres.push(mySphere);
+
+    // 충돌이 생길때마다 콜라이드 이벤트가 발생된다. cannonbody는 물리엔진이 들어간 바디
+    mySphere.cannonBody.addEventListener('collide', collide);
   });
 
   const preventDragClick = new PreventDragClick(canvas);
