@@ -39,7 +39,7 @@ export default function example() {
   const gltfLoader = new GLTFLoader();
   let mixer;
 
-  gltfLoader.load('/models/domino.glb', (gltf) => {
+  gltfLoader.load('/models/bird.glb', (gltf) => {
     console.log(gltf);
     console.log(gltf.scene);
     console.log(gltf.scene.children);
@@ -49,13 +49,13 @@ export default function example() {
 
     scene.add(ilbuniMesh);
 
-    // mixer = new THREE.AnimationMixer(ilbuniMesh);
-    // const actions = [];
-    // actions[0] = mixer.clipAction(gltf.animations[0]);
+    mixer = new THREE.AnimationMixer(ilbuniMesh);
+    const actions = [];
+    actions[0] = mixer.clipAction(gltf.animations[0]);
     // actions[1] = mixer.clipAction(gltf.animations[1]);
     // actions[0].repetitions = 2;
     // actions[0].clampWhenFinished = true;
-    // actions[0].play();
+    actions[0].play();
     // actions[1].play();
   });
 
